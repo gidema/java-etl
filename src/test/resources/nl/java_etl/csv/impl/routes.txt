@@ -1,0 +1,25 @@
+route_id,agency_id,route_short_name,route_long_name,route_desc,route_type,route_color,route_text_color,route_url
+52936,CXX,37,Den Haag - Delft - Delfgauw,,3,,,http://www.connexxion.nl/dienstregeling/lijn?ID=W037
+52932,CXX,70,Centrum West - Noordhove v.v.,,3,,,http://www.connexxion.nl/dienstregeling/lijn?ID=W070
+52931,CXX,71,Centrum West - Rokkeveen/Dorp,,3,,,http://www.connexxion.nl/dienstregeling/lijn?ID=W071
+52921,CXX,60,Delft Tanthof - Nootdorp,,3,,,http://www.connexxion.nl/dienstregeling/lijn?ID=W060
+52919,CXX,43,Den Haag - Wassenaar - Leiden,,3,,,http://www.connexxion.nl/dienstregeling/lijn?ID=W043
+52930,CXX,72,Centrum West - Dorp/Rokkeveen,,3,,,http://www.connexxion.nl/dienstregeling/lijn?ID=W072
+52925,CXX,424,Rotterdam - Honselersdijk,,3,,,http://www.connexxion.nl/dienstregeling/lijn?ID=W424
+52926,CXX,431,Rotterdam - Honselersdijk,,3,,,http://www.connexxion.nl/dienstregeling/lijn?ID=W431
+52918,CXX,46,Den Haag - Voorschoten,,3,,,http://www.connexxion.nl/dienstregeling/lijn?ID=W046
+52924,CXX,64,Delft Tanthof - IKEA/Delftse Hout,,3,,,http://www.connexxion.nl/dienstregeling/lijn?ID=W064
+52920,CXX,44,Den Haag - Wassenaar,,3,,,http://www.connexxion.nl/dienstregeling/lijn?ID=W044
+52923,CXX,62,Station Delft - Tanthof,,3,,,http://www.connexxion.nl/dienstregeling/lijn?ID=W062
+52933,CXX,74,Centrum West - Lansinghage,,3,,,http://www.connexxion.nl/dienstregeling/lijn?ID=W074
+52958,CXX,55,Delft - Zoetermeer,,3,,,http://www.connexxion.nl/dienstregeling/lijn?ID=W055
+52947,CXX,45,Den Haag - Voorschoten - Leiden,,3,,,http://www.connexxion.nl/dienstregeling/lijn?ID=W045
+52950,CXX,427,Den Haag - Honselersdijk,,3,,,http://www.connexxion.nl/dienstregeling/lijn?ID=W427
+52955,CXX,51,Delft - Rijswijk - Den Haag,,3,,,http://www.connexxion.nl/dienstregeling/lijn?ID=W051
+52956,CXX,50,Zoetermeer - Rijswijk - Den Haag,,3,,,http://www.connexxion.nl/dienstregeling/lijn?ID=W050
+52957,CXX,52,Rijswijk - Zoetermeer,,3,,,http://www.connexxion.nl/dienstregeling/lijn?ID=W052
+52946,CXX,69,Station Delft - Technopolis,,3,,,http://www.connexxion.nl/dienstregeling/lijn?ID=W069
+52954,CXX,429,Spijkenisse - Honselersdijk,,3,,,http://www.connexxion.nl/dienstregeling/lijn?ID=W429
+52952,CXX,484,Delfgauw - Pijnacker - Nootdorp,,3,,,http://www.connexxion.nl/dienstregeling/lijn?ID=W484
+53385,CXX,33,Delft - Maassluis - Naaldwijk,,3,,,http://www.connexxion.nl/dienstregeling/lijn?ID=W133
+

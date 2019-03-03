@@ -1,0 +1,3 @@
+route_id,agency_id,route_short_name,route_long_name,route_desc,route_type,route_color,route_text_color,route_url
+"52936","CXX","37","Den Haag - Delft - Delfgauw","","3","","","http://www.connexxion.nl/dienstregeling/lijn?ID=W037"
+"52932","CXX","70","Centrum West - Noordhove v.v.","","3","","","http://www.connexxion.nl/dienstregeling/lijn?ID=W070"
