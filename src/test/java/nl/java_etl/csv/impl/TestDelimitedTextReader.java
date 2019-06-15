@@ -12,8 +12,9 @@ import java.util.List;
 import org.junit.Test;
 
 import nl.java_etl.core.StringArray;
-import nl.java_etl.core.impl.ListAggregator;
+import nl.java_etl.core.impl.ListCollector;
 import nl.java_etl.core.impl.PipeLine;
+import nl.java_etl.core.impl.PipeLineBuilder;
 import nl.java_etl.csv.CSVDialect;
 import nl.java_etl.csv.QuoteStrategy;
 
@@ -30,9 +31,11 @@ public class TestDelimitedTextReader {
                 Reader reader = new InputStreamReader(is);
                 ) {
             DelimitedTextReader textReader = new DelimitedTextReader(reader, syntax, header);
-            ListAggregator<StringArray> consumer = new ListAggregator<>();
-            PipeLine.from(textReader).target(consumer);
-            textReader.run();
+            ListCollector<StringArray> consumer = new ListCollector<>();
+            PipeLine pipeline = PipeLineBuilder.from(textReader)
+                    .target(consumer)
+                    .build();
+            pipeline.run();
             List<StringArray> list = consumer.getResult();
             assertEquals(23, list.size());
             List<String> row3 = Arrays.asList("52921", "CXX", "60", "Delft Tanthof - Nootdorp",
@@ -56,9 +59,11 @@ public class TestDelimitedTextReader {
                 Reader reader = new InputStreamReader(is);
                 ) {
             DelimitedTextReader textReader = new DelimitedTextReader(reader, syntax, header);
-            ListAggregator<StringArray> consumer = new ListAggregator<>();
-            PipeLine.from(textReader).target(consumer);
-            textReader.run();
+            ListCollector<StringArray> consumer = new ListCollector<>();
+            PipeLine pipeline = PipeLineBuilder.from(textReader)
+                    .target(consumer)
+                    .build();
+            pipeline.run();
             List<StringArray> list = consumer.getResult();
             assertEquals(2, list.size());
             List<String> row1 = Arrays.asList("52936","CXX","37","Den Haag - Delft - Delfgauw","","3","","","http://www.connexxion.nl/dienstregeling/lijn?ID=W037");

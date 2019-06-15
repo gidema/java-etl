@@ -42,14 +42,6 @@ public class BaseFilter<T> implements StreamFilter<T> {
     }
 
     @Override
-    public void onError(Throwable error) {
-        if (target == null) {
-            throw new UnsupportedOperationException("No target consumer has been configured");
-        }
-        target.onError(error);
-    }
-
-    @Override
     public void accept(T t) {
         if (target == null) {
             throw new UnsupportedOperationException("No target consumer has been configured");

@@ -20,17 +20,6 @@ implements StreamTransformer<T, U> {
     @Override
     public void onStart() {
         started = true;
-        target.onStart();
-    }
-
-    @Override
-    public void onComplete() {
-        target.onComplete();
-    }
-
-    @Override
-    public void onError(Throwable error) {
-        target.onError(error);
     }
 
     @Override

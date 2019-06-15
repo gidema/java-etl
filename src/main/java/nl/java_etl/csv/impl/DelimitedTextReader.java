@@ -5,14 +5,17 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.List;
 
+import nl.java_etl.core.ProducingStreamGenerator;
 import nl.java_etl.core.StreamConsumer;
-import nl.java_etl.core.StreamGenerator;
+import nl.java_etl.core.StreamProducer;
 import nl.java_etl.core.StringArray;
+import nl.java_etl.core.impl.PipeLine;
+import nl.java_etl.csv.CSVDialect;
 import nl.java_etl.csv.DelimitedDocumentFormat;
 import nl.java_etl.csv.DelimitedLineReader;
-import nl.java_etl.csv.CSVDialect;
 
-public class DelimitedTextReader implements StreamGenerator<StringArray> {
+public class DelimitedTextReader implements ProducingStreamGenerator<StringArray> {
+    private PipeLine pipeLine;
     private BufferedReader reader;
     private final DelimitedLineReader delimitedLineReader;
     private final CSVDialect syntax;
@@ -43,6 +46,22 @@ public class DelimitedTextReader implements StreamGenerator<StringArray> {
         this.header = null;
     }
 
+    @Override
+    public StreamProducer<StringArray> generate() {
+        return generate(StringArray.class);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> StreamProducer<T> generate(Class<T> clazz) {
+        return (StreamProducer<T>) this;
+    }
+
+    @Override
+    public void setPipeLine(PipeLine pipeLine) {
+        this.pipeLine = pipeLine;
+    }
+
     public DelimitedTextReader(Reader reader, DelimitedDocumentFormat format) {
         this(reader, format.getSyntax(), format.getColumnNames());
     }
@@ -59,22 +78,32 @@ public class DelimitedTextReader implements StreamGenerator<StringArray> {
     }
 
     @Override
-    public void run() throws IOException {
+    public void onStart() {
         if (syntax.hasHeader()) {
-            List<String> headerData = delimitedLineReader.readHeader(reader);
-            if (!headerData.equals(header)) {
-                String msg = "The file header doesn't match the expected columns";
-                IOException e = new IOException(msg);
-                consumer.onError(e);
-                throw e;
+            try {
+                List<String> headerData = delimitedLineReader.readHeader(reader);
+                if (!headerData.equals(header)) {
+                    String msg = "The file header doesn't match the expected columns";
+                    pipeLine.abort(msg);
+                    return;
+                }
+            } catch (IOException e) {
+                pipeLine.abort(e.toString());
+                return;
             }
         }
-        consumer.onStart();
-        StringArray data = delimitedLineReader.readLine(reader);
-        while (data != StringArray.EMPTY) {
-            consumer.accept(data);
-            data = delimitedLineReader.readLine(reader);
+    }
+
+    @Override
+    public boolean tryAdvance() {
+        try {
+            StringArray sa = delimitedLineReader.readLine(reader);
+            if (sa == null) return false;
+            consumer.accept(sa);
+        } catch (IOException e) {
+            pipeLine.abort(e.toString());
+            throw new RuntimeException(e);
         }
-        consumer.onComplete();
+        return true;
     }
 }

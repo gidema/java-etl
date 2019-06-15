@@ -7,6 +7,7 @@ import java.util.List;
 import nl.java_etl.core.StringArray;
 
 public interface DelimitedLineReader {
+
     StringArray readLine(BufferedReader reader) throws IOException;
 
     /**

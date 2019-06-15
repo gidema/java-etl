@@ -6,13 +6,8 @@ import java.util.List;
 
 import nl.java_etl.core.StreamConsumer;
 
-public class ListAggregator<T> implements StreamConsumer<T> {
+public class ListCollector<T> implements StreamConsumer<T> {
     private List<T> result;
-
-    @Override
-    public void accept(T t) {
-        result.add(t);
-    }
 
     @Override
     public void onStart() {
@@ -20,12 +15,12 @@ public class ListAggregator<T> implements StreamConsumer<T> {
     }
 
     @Override
-    public void onComplete() {
-        //
+    public void accept(T t) {
+        result.add(t);
     }
 
     @Override
-    public void onError(Throwable error) {
+    public void onAbort() {
         this.result = Collections.emptyList();
     }
 

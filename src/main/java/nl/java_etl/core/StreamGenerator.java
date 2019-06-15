@@ -1,7 +1,23 @@
 package nl.java_etl.core;
 
-import java.io.IOException;
+public interface StreamGenerator {
 
-public interface StreamGenerator<T> extends StreamProducer<T> {
-    public void run() throws IOException;
+    default void onStart() {
+        return;
+    }
+
+    /**
+     * Check if anymore input elements are available.
+     *
+     * @return true if more elements are available; false otherwise
+     */
+    public boolean tryAdvance();
+
+    public <T> StreamProducer<T> generate(Class<T> clazz);
+
+
+    /**
+     * Process the next element.
+     */
+    //    public void next();
 }

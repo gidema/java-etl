@@ -12,11 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nl.java_etl.core.StringArray;
+import nl.java_etl.core.impl.PipeLine;
 import nl.java_etl.csv.CSVDialect;
 import nl.java_etl.csv.DelimitedTextWriter;
 import nl.java_etl.csv.QuoteStrategy;
 
 public class DelimitedTextWriterImpl implements DelimitedTextWriter {
+    private PipeLine pipeLine;
     private final File file;
     private final CSVDialect syntax;
     private final char delimiter;
@@ -65,6 +67,11 @@ public class DelimitedTextWriterImpl implements DelimitedTextWriter {
     }
 
     @Override
+    public void setPipeLine(PipeLine pipeLine) {
+        this.pipeLine = pipeLine;
+    }
+
+    @Override
     public void accept(StringArray row) {
         try {
             for (int i = 0; i < row.getSize(); i++) {
@@ -76,7 +83,7 @@ public class DelimitedTextWriterImpl implements DelimitedTextWriter {
             }
             writer.append(newLine);
         } catch (IOException e) {
-            onError(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -86,8 +93,9 @@ public class DelimitedTextWriterImpl implements DelimitedTextWriter {
             try {
                 writer = new BufferedWriter(new FileWriter(file));
             } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                pipeLine.abort("While trying to start writing to '%s', the following exception was thrown: %s",
+                        file.toString(), e.toString());
+                return;
             }
         }
         try {
@@ -95,7 +103,9 @@ public class DelimitedTextWriterImpl implements DelimitedTextWriter {
                 writeHeader();
             }
         } catch (IOException e) {
-            onError(e);
+            pipeLine.abort("While trying to write the header line to '%s', the following exception was thrown: %s",
+                    file.toString(), e.toString());
+            return;
         }
     }
 
@@ -159,20 +169,19 @@ public class DelimitedTextWriterImpl implements DelimitedTextWriter {
             writer.flush();
             writer.close();
         } catch (IOException e) {
-            onError(e);
+            throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void onError(Throwable error) {
+    public void onAbort() {
         try {
             if (writer != null) {
                 writer.close();
             }
             file.delete();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 

@@ -52,9 +52,11 @@ public class DelimitedLineReaderImpl implements DelimitedLineReader {
 
     @Override
     public StringArray readLine(BufferedReader reader) throws IOException {
-        if (matchEol(reader))
+        if (matchEol(reader)) {
+            if (eof(reader)) return null;
             return StringArray.EMPTY;
-        StringArray array = new StringArray.Impl(nColumns);
+        }
+        StringArray.Impl array = new StringArray.Impl(nColumns);
         int i = 0;
         while (!matchEol(reader) && i < nColumns) {
             if (i > 0) match(reader, delimiter);

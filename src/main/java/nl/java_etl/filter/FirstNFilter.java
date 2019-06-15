@@ -15,21 +15,6 @@ public class FirstNFilter<T> implements StreamFilter<T> {
     }
 
     @Override
-    public void onStart() {
-        target.onStart();
-    }
-
-    @Override
-    public void onComplete() {
-        target.onComplete();
-    }
-
-    @Override
-    public void onError(Throwable error) {
-        target.onError(error);
-    }
-
-    @Override
     public void accept(T t) {
         if (processed < headCount) {
             processed++;

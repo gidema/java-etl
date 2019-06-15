@@ -1,67 +1,71 @@
 package nl.java_etl.core.impl;
 
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
+import java.util.Set;
 
+import nl.java_etl.EtlTransaction;
 import nl.java_etl.core.StreamConsumer;
 import nl.java_etl.core.StreamGenerator;
-import nl.java_etl.core.StreamProducer;
-import nl.java_etl.core.StreamTransformer;
-import nl.java_etl.filter.PredicateFilter;
 
-public class PipeLine {
-    StreamGenerator<?> generator;
-    final List<StreamTransformer<?, ?>> transformers = new LinkedList<>();
+public class PipeLine implements Runnable {
+    final Set<EtlTransaction> transactions;
+    final StreamGenerator generator;
+    final Set<StreamConsumer<?>> targets;
+    private boolean aborted;
+    private String abortReason;
 
-    private PipeLine() {
+    public PipeLine(StreamGenerator generator,
+            Set<EtlTransaction> transactions,
+            Set<StreamConsumer<?>> targets) {
+        super();
+        this.transactions = transactions;
+        this.generator = generator;
+        this.targets = targets;
     }
 
-    public static <T> Stage<T> from(StreamGenerator<T> generator) {
-        return new PipeLine().start(generator);
+    @Override
+    public void run() {
+        transactions.forEach(EtlTransaction::onStart);
+        generator.onStart();
+        targets.forEach(StreamConsumer::onStart);
+        while (!aborted && generator.tryAdvance()) {
+            // Just keep on going
+        }
+        targets.forEach(t -> t.onComplete());
+        transactions.forEach(t -> t.onComplete());
+        if (aborted) {
+            // TODO Report issues
+        }
     }
 
-    public <T> Stage<T> start(StreamGenerator<?> generator1) {
-        this.generator = generator1;
-        return new Stage<>();
+    public boolean isAborted() {
+        return aborted;
     }
 
-    public void run() throws IOException {
-        this.generator.run();
+    public String getAbortReason() {
+        return abortReason;
     }
 
-    public class Stage<T> {
-        public <U> Stage<U> transform(StreamTransformer<T, U> transformer) {
-            transformers.add(transformer);
-            return new Stage<>();
-        }
+    /**
+     * Abort the pipeline with a specified reason.
+     *
+     * @param reason
+     */
+    public void abort(String reason) {
+        this.aborted = true;
+        this.abortReason = reason;
+    }
 
-        public <U> Stage<U> transform(Function<T, U> transformation) {
-            transformers.add(new FunctionalStreamTransformer<>(transformation));
-            return new Stage<>();
-        }
+    /**
+     * Convenience method to abort with a formatted message
+     *
+     * @param message
+     * @param args
+     */
+    public void abort(String message, Object... args) {
+        abort(String.format(message, args));
+    }
 
-        public <U> Stage<U> transformToMany(Function<T, Stream<U>> transformation) {
-            transformers.add(new FunctionalOneToManyTransformer<>(transformation));
-            return new Stage<>();
-        }
-
-        public Stage<T> filter(Predicate<T> predicate) {
-            transformers.add(new PredicateFilter<>(predicate));
-            return new Stage<>();
-        }
-
-        public PipeLine target(StreamConsumer<T> consumer) {
-            StreamProducer<?> producer = generator;
-            for (StreamTransformer<?, ?> transformer : transformers) {
-                producer.setGenericTarget(transformer);
-                producer = transformer;
-            }
-            producer.setGenericTarget(consumer);
-            return PipeLine.this;
-        }
+    public void addTransaction(EtlTransaction transaction) {
+        transactions.add(transaction);
     }
 }
